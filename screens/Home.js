@@ -1,19 +1,18 @@
-import { StyleSheet, Text, View } from "react-native";
 import WelcomeTitle from "../components/Home/WelcomeTitle";
-import ExpenseList from "../components/Home/ExpenseList";
-import OverviewChart from "../components/Home/OverviewChart";
 import Spent from "../components/Home/Spent";
+import { useState } from "react";
+import Expense from "../components/Home/Expense/Expense";
+import { View } from "react-native";
 
 const Home = () => {
+  const [spentAmount, setSpentAmount] = useState(0);
+
   return (
     <View style={{ flex: 1 }}>
       <WelcomeTitle />
-      <Spent />
-      <View style={{ flex: 1 }}>
-        <OverviewChart />
-      </View>
+      <Spent spent={spentAmount} />
       <View style={{ flex: 2 }}>
-        <ExpenseList></ExpenseList>
+        <Expense />
       </View>
     </View>
   );

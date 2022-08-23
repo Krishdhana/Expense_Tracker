@@ -1,11 +1,12 @@
+import { Box } from "native-base";
 import { StyleSheet, Text, View } from "react-native";
 
-const Spent = () => {
+const Spent = (props) => {
   return (
-    <View style={styles.container}>
+    <Box shadow={2} style={styles.container}>
       <Text styles={[styles.spentInfo, styles.spent]}>This month spent</Text>
-      <Text style={styles.spent}> ₹ 50,000 </Text>
-    </View>
+      <Text style={styles.spent}> ₹ {props.spent} </Text>
+    </Box>
   );
 };
 

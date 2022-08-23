@@ -1,21 +1,19 @@
-import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Box, NativeBaseProvider } from "native-base";
+import { LinearGradient } from "react-native-svg";
 import Home from "./screens/Home";
+
+const config = {
+  dependencies: {
+    "linear-gradient": LinearGradient,
+  },
+};
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Home></Home>
-    </View>
+    <NativeBaseProvider config={config}>
+      <Box py={10} px={5} flex="1" paddingTop={30}>
+        <Home></Home>
+      </Box>
+    </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginVertical: 20,
-    paddingTop: 30,
-    paddingHorizontal: 20,
-  },
-});
