@@ -1,30 +1,47 @@
-import { StyleSheet, Pressable, FlatList, Text, View } from "react-native";
+import { useContext } from "react";
 import moment from "moment";
+import { UserDataContext } from "../../../store/redux/userdata-context";
+import { FlatList, Flex, Pressable, Text, View } from "native-base";
 
 const ExpenseList = (props) => {
+  const userDataCtx = useContext(UserDataContext);
+
   return (
     <FlatList
-      data={props.expenseList}
+      showsVerticalScrollIndicator={false}
+      data={userDataCtx.expenseList}
       renderItem={(data) => {
         return (
-          <View key={data.index} style={{ marginVertical: 5 }}>
-            <Pressable
-              onPress={() => {
-                props.onClickExpense(data);
-              }}
-              android_ripple={{ color: "grey" }}
+          <Pressable onPress={() => props.onClickExpenseItem(data)} mb={3}>
+            <Flex
+              width={"full"}
+              bg={"primary.100"}
+              px={5}
+              py={2}
+              rounded={"2xl"}
+              direction="row"
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              shadow={5}
             >
-              <View style={styles.expenseItem}>
-                <View>
-                  <Text style={styles.expenseName}>{data.item.name}</Text>
-                  <Text style={{ marginVertical: 3 }}>
-                    {moment(data.item.date).format("DD MMM")}
-                  </Text>
-                </View>
-                <Text style={{ fontSize: 18 }}>₹ {data.item.amount}</Text>
+              <View>
+                <Text
+                  isTruncated
+                  width={"48"}
+                  fontWeight={"bold"}
+                  fontSize={16}
+                >
+                  {data.item.name}
+                </Text>
+                <Text fontSize={12} color={"gray.800"}>
+                  {moment(data.item.date).format("DD MMM")}
+                </Text>
               </View>
-            </Pressable>
-          </View>
+              <Text fontWeight={"bold"} fontSize={16}>
+                ₹ {data.item.amount}
+              </Text>
+            </Flex>
+          </Pressable>
         );
       }}
     />
@@ -32,25 +49,3 @@ const ExpenseList = (props) => {
 };
 
 export default ExpenseList;
-
-const styles = StyleSheet.create({
-  expenseItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 5,
-    paddingHorizontal: 20,
-    fontWeight: "bold",
-    borderColor: "black",
-    borderRadius: 8,
-    borderWidth: 1,
-    shadowColor: "#000",
-  },
-  expenseName: {
-    fontSize: 16,
-  },
-  expenseList: {
-    marginVertical: 10,
-    flex: 1,
-  },
-});

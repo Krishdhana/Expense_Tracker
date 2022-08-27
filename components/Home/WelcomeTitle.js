@@ -1,15 +1,11 @@
-import { StyleSheet, Text } from "react-native";
+import { Text } from "native-base";
 
-const WelcomeTitle = () => {
-  return <Text style={styles.welcomeFont}>Welcome, Krish</Text>;
+const WelcomeTitle = (props) => {
+  return (
+    <Text fontSize={20} letterSpacing={1.5} fontWeight={"bold"}>
+      Welcome, <Text color={"primary.700"}>{props.name}</Text>
+    </Text>
+  );
 };
 
 export default WelcomeTitle;
-
-const styles = StyleSheet.create({
-  welcomeFont: {
-    fontSize: 20,
-    letterSpacing: 1.5,
-    fontWeight: "500",
-  },
-});

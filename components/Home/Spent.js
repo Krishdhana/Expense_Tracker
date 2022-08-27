@@ -1,32 +1,12 @@
-import { Box } from "native-base";
-import { StyleSheet, Text, View } from "react-native";
+import { Center, Text } from "native-base";
 
 const Spent = (props) => {
   return (
-    <Box shadow={2} style={styles.container}>
-      <Text styles={[styles.spentInfo, styles.spent]}>This month spent</Text>
-      <Text style={styles.spent}> ₹ {props.spent} </Text>
-    </Box>
+    <Center bg={"primary.200"} borderRadius={20} mt={6} py={15} shadow={"7"}>
+      <Text fontSize={15}>This month spend</Text>
+      <Text fontSize={30}> ₹ {props.spent} </Text>
+    </Center>
   );
 };
 
 export default Spent;
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 15,
-    marginTop: 20,
-    alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 20,
-  },
-
-  spentInfo: {
-    fontSize: 15,
-    marginBottom: 5,
-  },
-
-  spent: {
-    fontSize: 30,
-    letterSpacing: 1,
-  },
-});

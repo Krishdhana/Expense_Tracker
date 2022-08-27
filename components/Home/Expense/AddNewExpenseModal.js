@@ -1,15 +1,18 @@
 import { Input, Button, FormControl } from "native-base";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useToast } from "native-base";
 import { Modal } from "native-base";
+import { UserDataContext } from "../../../store/redux/userdata-context";
+import { ToastAndroid } from "react-native";
 
 const AddNewExpenseModal = (props) => {
   const [expenseName, setExpenseName] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
-  const errorToast = useToast();
+
+  const userDataCtx = useContext(UserDataContext);
 
   useEffect(() => {
-    if (props.editMode && props.open) {
+    if (props.isEditMode && props.open) {
       setExpenseName(props.selectedExpense.item.name);
       setExpenseAmount(props.selectedExpense.item.amount);
     } else {
@@ -19,15 +22,20 @@ const AddNewExpenseModal = (props) => {
   }, [props.open]);
 
   const addExpenseHandler = () => {
-    if (!isNaN(expenseAmount) && expenseName) {
+    if (!isNaN(expenseAmount) && expenseName.length > 2 && expenseAmount > 0) {
       let expenseItem = {
         name: expenseName,
         amount: +expenseAmount,
         date: new Date().toISOString(),
       };
-      props.onAddExpense(expenseItem);
+
+      if (!props.isEditMode) {
+        userDataCtx.addExpense(expenseItem);
+      } else
+        userDataCtx.updateExpense(expenseItem, props.selectedExpense.index);
+      props.closeModal();
     } else {
-      errorToast.show({ description: "Hello world", zIndex: 99999999 });
+      ToastAndroid.show("Please enter proper Expense details", 4000);
     }
   };
 
@@ -63,14 +71,12 @@ const AddNewExpenseModal = (props) => {
               variant="ghost"
               size="sm"
               colorScheme="blueGray"
-              onPress={() => {
-                props.onCloseModal(false);
-              }}
+              onPress={props.closeModal}
             >
               Cancel
             </Button>
             <Button size="sm" onPress={addExpenseHandler}>
-              {props.editMode ? "Update" : "Add"}
+              {props.isEditMode ? "Update" : "Add"}
             </Button>
           </Button.Group>
         </Modal.Footer>
