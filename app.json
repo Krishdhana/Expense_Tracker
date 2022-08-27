@@ -6,11 +6,10 @@
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "backgroundColor": "#F7F7F7",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F7F7F7"
+      "backgroundColor" : "#FFFFFF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

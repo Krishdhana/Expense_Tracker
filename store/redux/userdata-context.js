@@ -6,7 +6,7 @@ import { ToastAndroid } from "react-native";
 export const UserDataContext = createContext({
   username: "Krish",
   expenseList: [],
-  totalExpenseAmount: 0,
+  expenseDetails: { spent: 0, saving: 0 },
   addExpense: (exp) => {},
   removeExpense: (idx) => {},
   updateExpense: (exp, idx) => {},
@@ -14,7 +14,10 @@ export const UserDataContext = createContext({
 
 const UserDataContextProvider = ({ children }) => {
   const [expenseList, updateExpenseList] = useState([]);
-  const [totalExpenseAmount, setTotalExpenseAmount] = useState(0);
+  const [expenseDetails, setExpenseDetails] = useState({
+    spent: 0,
+    saving: 0,
+  });
 
   useEffect(() => {
     _getUserDataFromStorage();
@@ -30,7 +33,6 @@ const UserDataContextProvider = ({ children }) => {
 
     if (jsoned) {
       updateExpenseList(jsoned.expenseList);
-      setTotalExpenseAmount(jsoned.totalExpenseAmount);
       value.username = jsoned.username;
     }
   };
@@ -49,48 +51,57 @@ const UserDataContextProvider = ({ children }) => {
       let newExp = {
         month: moment().format("MMMM"),
         expList: [exp],
+        income: 25000,
       };
       updateExpenseList((curList) => [newExp, ...curList]);
     } else {
       let curList = [...expenseList];
       curList[0].expList.unshift(exp);
+      updateExpenseList(curList);
     }
     ToastAndroid.show(`${exp.name} added`, 4000);
   };
 
-  const removeExpense = (idx) => {
-    let expName = expenseList[idx].name;
+  const removeExpense = (selectedExp) => {
+    let expName = selectedExp.item.name;
     let current = [...expenseList];
-    current.splice(idx, 1);
+    current[selectedExp.mainIdx].expList.splice(selectedExp.index, 1);
     updateExpenseList(current);
 
     ToastAndroid.show(`${expName} deleted`, 4000);
   };
 
-  const updateState = () => {
-    let amount = 0;
-    if (expenseList.length > 1) {
-      expenseList.forEach((exp) => (amount += exp.amount));
-    } else {
-      amount = expenseList[0]?.amount || 0;
-    }
-    setTotalExpenseAmount(amount);
-    _setUserDataToStorage();
-  };
-
-  const updateExpense = (exp, idx) => {
+  const updateExpense = (newExpense) => {
     let current = [...expenseList];
-    current.splice(idx, 1, exp);
+    current[newExpense.mainIdx].expList.splice(
+      newExpense.index,
+      1,
+      newExpense.item
+    );
 
     updateExpenseList(current);
 
     ToastAndroid.show(`Expense updated`, 4000);
   };
 
+  const updateState = () => {
+    const obj = {
+      spent: 0,
+      saving: expenseList[0]?.income || 0,
+    };
+    if (expenseList.length > 0 && expenseList[0].expList.length > 0) {
+      let temp = { ...expenseList[0] };
+      temp.expList?.forEach((exp) => (obj.spent += exp.amount));
+      obj.saving = +temp.income - +obj.spent;
+    }
+    setExpenseDetails(obj);
+    _setUserDataToStorage();
+  };
+
   const value = {
     username: "Krish",
     expenseList: expenseList,
-    totalExpenseAmount: totalExpenseAmount,
+    expenseDetails: expenseDetails,
     addExpense: addExpense,
     updateExpense: updateExpense,
     removeExpense: removeExpense,

@@ -1,6 +1,5 @@
 import { Input, Button, FormControl } from "native-base";
 import { useContext, useEffect, useState } from "react";
-import { useToast } from "native-base";
 import { Modal } from "native-base";
 import { UserDataContext } from "../../../store/redux/userdata-context";
 import { ToastAndroid } from "react-native";
@@ -31,8 +30,10 @@ const AddNewExpenseModal = (props) => {
 
       if (!props.isEditMode) {
         userDataCtx.addExpense(expenseItem);
-      } else
-        userDataCtx.updateExpense(expenseItem, props.selectedExpense.index);
+      } else {
+        let newExpense = { ...props.selectedExpense, item: expenseItem };
+        userDataCtx.updateExpense(newExpense);
+      }
       props.closeModal();
     } else {
       ToastAndroid.show("Please enter proper Expense details", 4000);

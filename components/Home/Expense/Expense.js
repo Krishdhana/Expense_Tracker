@@ -20,7 +20,12 @@ const Expense = () => {
   const [expenseEditMode, setExpenseEditMode] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState({});
 
-  const onClickExpenseItem = (exp) => {
+  const onClickExpenseItem = (mainIdx, expIdx) => {
+    let exp = {
+      item: userDataCtx.expenseList[mainIdx].expList[expIdx],
+      index: expIdx,
+      mainIdx: mainIdx,
+    };
     setSelectedExpense(exp);
     setExpenseItemActionSheet(true);
   };
@@ -37,7 +42,7 @@ const Expense = () => {
   };
 
   const deleteExpenseItem = () => {
-    userDataCtx.removeExpense(selectedExpense.index);
+    userDataCtx.removeExpense(selectedExpense);
   };
 
   const getSelectedAction = (option) => {
@@ -74,7 +79,8 @@ const Expense = () => {
           Add Expense
         </Button>
       </Flex>
-      {userDataCtx.expenseList.length ? (
+      {userDataCtx.expenseList.length <= 1 &&
+      userDataCtx.expenseList[0]?.expList.length ? (
         <ExpenseList onClickExpenseItem={onClickExpenseItem} />
       ) : (
         <NoExpenseMsg />
