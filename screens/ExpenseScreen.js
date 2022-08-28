@@ -1,18 +1,26 @@
-import { Box, Text } from "native-base";
+import { StyleSheet, View } from "react-native";
+import { Text } from "react-native-paper";
 import ExpenseList from "../components/Home/Expense/ExpenseList";
 import Wrapper from "../components/shared/Wrapper";
 
 const ExpenseScreen = () => {
   return (
     <Wrapper>
-      <Box>
-        <Text fontWeight={"bold"} color={"primary.600"} fontSize={20} mb={5}>
-          Expenses
-        </Text>
+      <View>
+        <Text style={styles.title}>Expenses</Text>
         <ExpenseList onClickExpenseItem={(exp) => {}} />
-      </Box>
+      </View>
     </Wrapper>
   );
 };
 
 export default ExpenseScreen;
+
+const styles = StyleSheet.create({
+  title: {
+    fontWeight: "bold",
+    fontSize: 20,
+    textAlign: "center",
+    marginBottom: 5,
+  },
+});

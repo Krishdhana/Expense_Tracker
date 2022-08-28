@@ -1,41 +1,50 @@
 import moment from "moment";
-import { Box, Button, HStack, Text } from "native-base";
-import { AlertDialog } from "native-base";
+import { View, Text, StyleSheet } from "react-native";
+import { Dialog, Button, Portal } from "react-native-paper";
 
 const ViewExpense = ({ open, close, selectedExpense }) => {
   return (
-    <AlertDialog isOpen={open} onClose={() => close(false)}>
-      <AlertDialog.Content>
-        <AlertDialog.CloseButton />
-        <AlertDialog.Header> Expense Details </AlertDialog.Header>
-        <AlertDialog.Body>
-          <Box>
-            <HStack my={1}>
-              <Text fontWeight={"bold"}> Expense Name : </Text>
-              <Text> {selectedExpense.item?.name} </Text>
-            </HStack>
-            <HStack my={1}>
-              <Text fontWeight={"bold"}> Amount : </Text>
-              <Text> ₹ {selectedExpense.item?.amount} </Text>
-            </HStack>
-            <HStack my={1}>
-              <Text fontWeight={"bold"}> Expense Name : </Text>
-              <Text>
-                {moment(selectedExpense.item?.date).format("DD MMM YYYY")}
-              </Text>
-            </HStack>
-          </Box>
-        </AlertDialog.Body>
-        <AlertDialog.Footer>
-          <Button.Group space={2}>
-            <Button onPress={() => close(false)} variant="ghost">
-              Close
-            </Button>
-          </Button.Group>
-        </AlertDialog.Footer>
-      </AlertDialog.Content>
-    </AlertDialog>
+    <Portal>
+      <Dialog visible={open} onDismiss={() => close(false)}>
+        <Dialog.Title>Expense Details</Dialog.Title>
+        <Dialog.Content style={styles.container}>
+          <View style={styles.row}>
+            <Text style={styles.title}>Name :</Text>
+            <Text>{selectedExpense.item?.name}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.title}>Amount :</Text>
+            <Text>₹ {selectedExpense.item?.amount}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.title}>Date :</Text>
+            <Text>
+              {" "}
+              {moment(selectedExpense.item?.date).format("DD MMM YYYY")}
+            </Text>
+          </View>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => close(false)}>Close</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 };
 
 export default ViewExpense;
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: "18%",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  title: {
+    fontWeight: "bold",
+  },
+});

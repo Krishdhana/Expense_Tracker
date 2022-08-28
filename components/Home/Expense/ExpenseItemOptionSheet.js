@@ -1,0 +1,89 @@
+import { useEffect, useRef } from "react";
+import { StyleSheet, Text } from "react-native";
+import { List, MD3Colors } from "react-native-paper";
+
+import RBSheet from "react-native-raw-bottom-sheet";
+
+const ExpenseItemOptionSheet = ({
+  open,
+  selectedExpense,
+  getSelectedAction,
+  closeSheet,
+}) => {
+  useEffect(() => {
+    if (open) refRBSheet.current.open();
+    else refRBSheet.current.close();
+  }, [open]);
+
+  const actionSheetClose = (option) => {
+    getSelectedAction(option);
+    closeSheet();
+  };
+
+  const expenseItemOptions = [
+    {
+      title: "View",
+      icon: "briefcase-eye",
+      onPress: () => actionSheetClose(1),
+    },
+    {
+      title: "Edit",
+      icon: "pencil-box",
+      onPress: () => actionSheetClose(2),
+    },
+    {
+      title: "Delete",
+      icon: "delete",
+      onPress: () => actionSheetClose(3),
+    },
+  ];
+
+  const refRBSheet = useRef();
+  return (
+    <RBSheet
+      ref={refRBSheet}
+      animationType="fade"
+      closeOnDragDown={true}
+      onClose={() => closeSheet(false)}
+      customStyles={{
+        wrapper: {
+          backgroundColor: "rgba(0, 0, 0, 0.25)",
+        },
+        draggableIcon: {
+          backgroundColor: "#000",
+        },
+        container: {
+          backgroundColor: MD3Colors.primary95,
+        },
+      }}
+    >
+      <Text style={{ fontSize: 16, textAlign: "center", marginVertical: 10 }}>
+        {selectedExpense.item?.name}
+      </Text>
+      {expenseItemOptions.map((expOpt) => {
+        return (
+          <List.Item
+            key={expOpt.icon}
+            title={expOpt.title}
+            left={(props) => <List.Icon {...props} icon={expOpt.icon} />}
+            onPress={expOpt.onPress}
+          />
+        );
+      })}
+    </RBSheet>
+  );
+};
+
+export default ExpenseItemOptionSheet;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: "grey",
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
+});

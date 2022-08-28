@@ -1,106 +1,74 @@
-import { extendTheme, NativeBaseProvider, StatusBar } from "native-base";
-import { LinearGradient } from "react-native-svg";
-import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-
-import { FontAwesome5 } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "react-native";
+import { useState } from "react";
+import { BottomNavigation, MD3Colors } from "react-native-paper";
+import {
+  MD3LightTheme as DefaultTheme,
+  Provider as PaperProvider,
+} from "react-native-paper";
 
 import Home from "./screens/Home";
 import Settings from "./screens/Settings";
 import ExpenseScreen from "./screens/ExpenseScreen";
 import UserDataContextProvider from "./store/redux/userdata-context";
 
-const config = {
-  dependencies: {
-    "linear-gradient": LinearGradient,
-  },
-};
+const HomeRoute = () => <Home />;
+const ExpenseListRoute = () => <ExpenseScreen />;
+const SettingRoute = () => <Settings />;
 
 export default function App() {
-  const Tab = createMaterialBottomTabNavigator();
-
-  const theme = extendTheme({
+  const customTheme = {
+    ...DefaultTheme,
+    dark: false,
+    roundness: 2,
+    version: 3,
     colors: {
-      // Add new color
-      primary: {
-        50: "#edeeff",
-        100: "#cccbeb",
-        200: "#acaad7",
-        300: "#8d87c5",
-        400: "#6f65b3",
-        500: "#584c9a",
-        600: "#413b79",
-        700: "#2b2a57",
-        800: "#181a36",
-        900: "#060718",
-      },
-      // Redefining only one shade, rest of the color will remain same.
-      amber: {
-        400: "#d97706",
-      },
+      ...DefaultTheme.colors,
     },
-    config: {
-      // Changing initialColorMode to 'dark'
-      initialColorMode: "light",
+  };
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    {
+      key: "home",
+      title: "Home",
+      focusedIcon: "home-variant",
+      unfocusedIcon: "home-variant-outline",
     },
+    {
+      key: "expenseList",
+      title: "ExpenseList",
+      focusedIcon: "clipboard-list",
+      unfocusedIcon: "clipboard-list-outline",
+    },
+    {
+      key: "settings",
+      title: "Settings",
+      focusedIcon: "cog",
+      unfocusedIcon: "cog-outline",
+    },
+  ]);
+
+  const renderScene = BottomNavigation.SceneMap({
+    home: HomeRoute,
+    expenseList: ExpenseListRoute,
+    settings: SettingRoute,
   });
 
   return (
     <>
-      <StatusBar backgroundColor={"#694fad"}></StatusBar>
-      <NativeBaseProvider theme={theme} config={config}>
+      <StatusBar
+        barStyle={"dark-content"}
+        backgroundColor={MD3Colors.primary90}
+      ></StatusBar>
+      <PaperProvider theme={customTheme}>
         <UserDataContextProvider>
-          <NavigationContainer>
-            <Tab.Navigator
-              shifting={true}
-              barStyle={{
-                backgroundColor: "#694fad",
-              }}
-              initialRouteName="Home"
-            >
-              <Tab.Screen
-                options={{
-                  tabBarLabel: "Home",
-                  paddingBottom: 48,
-                  tabBarIcon: ({ color }) => (
-                    <FontAwesome5 name="home" size={22} color={color} />
-                  ),
-                }}
-                name="Home"
-                component={Home}
-              />
-              <Tab.Screen
-                options={{
-                  tabBarLabel: "Expense List",
-                  paddingBottom: 48,
-                  tabBarIcon: ({ color }) => (
-                    <FontAwesome5
-                      name="clipboard-list"
-                      size={22}
-                      color={color}
-                    />
-                  ),
-                }}
-                name="ExpenseList"
-                component={ExpenseScreen}
-              />
-              <Tab.Screen
-                options={{
-                  tabBarLabel: "Setting",
-                  paddingBottom: 48,
-
-                  tabBarIcon: ({ color }) => (
-                    <Ionicons name="settings-sharp" size={22} color={color} />
-                  ),
-                }}
-                name="Screen"
-                component={Settings}
-              />
-            </Tab.Navigator>
-          </NavigationContainer>
+          <BottomNavigation
+            navigationState={{ index, routes }}
+            onIndexChange={setIndex}
+            renderScene={renderScene}
+          />
         </UserDataContextProvider>
-      </NativeBaseProvider>
+      </PaperProvider>
     </>
   );
 }

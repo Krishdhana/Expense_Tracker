@@ -1,13 +1,21 @@
-import { Flex, Text } from "native-base";
+import { Text, View, StyleSheet } from "react-native";
 
 const NoExpenseMsg = () => {
   return (
-    <Flex flex={1} justifyContent={"center"} alignItems={"center"}>
+    <View style={styles.container}>
       <Text fontSize={20} fontWeight={"bold"} letterSpacing={1}>
         No Expenses :)
       </Text>
-    </Flex>
+    </View>
   );
 };
 
 export default NoExpenseMsg;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

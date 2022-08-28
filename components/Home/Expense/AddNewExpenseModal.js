@@ -1,89 +1,135 @@
-import { Input, Button, FormControl } from "native-base";
+import {
+  Modal,
+  Portal,
+  Button,
+  TextInput,
+  MD3Colors,
+  Checkbox,
+  List,
+} from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
-import { Modal } from "native-base";
 import { UserDataContext } from "../../../store/redux/userdata-context";
-import { ToastAndroid } from "react-native";
+import { StyleSheet, Text, ToastAndroid, View } from "react-native";
 
-const AddNewExpenseModal = (props) => {
+const AddNewExpenseModal = ({
+  open,
+  closeModal,
+  isEditMode,
+  selectedExpense,
+}) => {
   const [expenseName, setExpenseName] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
-
+  const [expenseType, setExpenseType] = useState(false);
+  const containerStyle = { backgroundColor: MD3Colors.primary95, padding: 20 };
   const userDataCtx = useContext(UserDataContext);
 
   useEffect(() => {
-    if (props.isEditMode && props.open) {
-      setExpenseName(props.selectedExpense.item.name);
-      setExpenseAmount(props.selectedExpense.item.amount);
+    if (isEditMode && open) {
+      setExpenseName(selectedExpense.item.name);
+      setExpenseAmount(selectedExpense.item.amount.toString());
     } else {
       setExpenseName("");
       setExpenseAmount("");
     }
-  }, [props.open]);
+  }, [open]);
 
   const addExpenseHandler = () => {
     if (!isNaN(expenseAmount) && expenseName.length > 2 && expenseAmount > 0) {
       let expenseItem = {
         name: expenseName,
         amount: +expenseAmount,
+        income: expenseType,
         date: new Date().toISOString(),
       };
 
-      if (!props.isEditMode) {
+      if (!isEditMode) {
         userDataCtx.addExpense(expenseItem);
       } else {
-        let newExpense = { ...props.selectedExpense, item: expenseItem };
+        let newExpense = { ...selectedExpense, item: expenseItem };
         userDataCtx.updateExpense(newExpense);
       }
-      props.closeModal();
+      closeModal();
     } else {
       ToastAndroid.show("Please enter proper Expense details", 4000);
     }
   };
 
   return (
-    <Modal isOpen={props.open}>
-      <Modal.Content maxWidth="300px">
-        <Modal.Header>Add Expense</Modal.Header>
-        <Modal.Body>
-          <FormControl>
-            <FormControl.Label>Name</FormControl.Label>
-            <Input
-              onChangeText={setExpenseName}
-              value={expenseName}
-              size="sm"
-              marginBottom={5}
-              placeholder="Name"
+    <Portal>
+      <Modal
+        style={styles.modal}
+        visible={open}
+        dismissable={false}
+        onDismiss={closeModal}
+        contentContainerStyle={containerStyle}
+      >
+        <Text style={styles.title}>Add Expense</Text>
+        <TextInput
+          onChangeText={setExpenseName}
+          value={expenseName}
+          mode="flat"
+          dense="true"
+          label="Name"
+          theme={"3"}
+          style={{ marginBottom: 15 }}
+        />
+        <TextInput
+          onChangeText={setExpenseAmount}
+          value={expenseAmount}
+          mode="flat"
+          dense="true"
+          label="Amount"
+          keyboardType="number-pad"
+          style={{ marginBottom: 15 }}
+        />
+        <List.Item
+          title="Add on Balance"
+          right={(props) => (
+            <Checkbox
+              status={expenseType ? "checked" : "unchecked"}
+              onPress={() => {
+                setExpenseType(!expenseType);
+              }}
             />
-          </FormControl>
-          <FormControl>
-            <FormControl.Label>Amount</FormControl.Label>
-            <Input
-              onChangeText={setExpenseAmount}
-              keyboardType="numeric"
-              value={expenseAmount.toString()}
-              size="sm"
-              placeholder="Amount"
-            />
-          </FormControl>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button.Group space={2}>
-            <Button
-              variant="ghost"
-              size="sm"
-              colorScheme="blueGray"
-              onPress={props.closeModal}
-            >
-              Cancel
-            </Button>
-            <Button size="sm" onPress={addExpenseHandler}>
-              {props.isEditMode ? "Update" : "Add"}
-            </Button>
-          </Button.Group>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+          )}
+        />
+
+        <View style={styles.btnContainer}>
+          <Button
+            style={{ marginHorizontal: 10 }}
+            mode="text"
+            compact={true}
+            onPress={() => closeModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            compact={true}
+            mode="contained-tonal"
+            onPress={addExpenseHandler}
+          >
+            {isEditMode ? "Update" : "Add Expense"}
+          </Button>
+        </View>
+      </Modal>
+    </Portal>
   );
 };
 
 export default AddNewExpenseModal;
+
+const styles = StyleSheet.create({
+  modal: {
+    margin: 20,
+  },
+  title: {
+    marginBottom: 15,
+    fontSize: 15,
+  },
+  btnContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 20,
+    justifyContent: "flex-end",
+  },
+});
