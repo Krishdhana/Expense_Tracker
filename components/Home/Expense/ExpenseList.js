@@ -25,18 +25,17 @@ const ExpenseList = (props) => {
                     onPress={() =>
                       props.onClickExpenseItem(data.index, exp.index)
                     }
-                    mb={3}
+                    p={2}
                   >
                     <Flex
-                      width={"full"}
                       bg={"primary.100"}
                       px={5}
                       py={2}
                       borderRadius={16}
                       direction="row"
+                      shadow={6}
                       alignItems={"center"}
                       justifyContent={"space-between"}
-                      shadow={"7"}
                     >
                       <View>
                         <Text
