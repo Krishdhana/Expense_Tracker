@@ -8,7 +8,7 @@ const ExpenseScreen = () => {
     <Wrapper>
       <View>
         <Text style={styles.title}>Expenses</Text>
-        <ExpenseList onClickExpenseItem={(exp) => {}} />
+        <ExpenseList onClickExpenseItem={(exp : any) => {}} />
       </View>
     </Wrapper>
   );

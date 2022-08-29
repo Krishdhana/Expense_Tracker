@@ -1,15 +1,21 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Surface, MD3Colors } from "react-native-paper";
+import { ExpenseList } from "../shared/interface/Interface";
 
-const OverviewBanner = ({ expenseDetails }) => {
+export type Props = {
+  expenseList : ExpenseList
+}
+
+
+const OverviewBanner : React.FC<Props> = ({ expenseList }) => {
   const bannersDetails = [
     {
       name: "Income",
-      amount: expenseDetails.income,
+      amount: expenseList.income,
     },
     {
       name: "Spent",
-      amount: expenseDetails.spent,
+      amount: expenseList.spent,
     },
   ];
 
@@ -43,7 +49,7 @@ const OverviewBanner = ({ expenseDetails }) => {
         style={[styles.box, styles.balanceBox]}
       >
         <Text style={styles.smallTxt}>{"Balance"} </Text>
-        <Text style={styles.text}>₹ {expenseDetails.balance} </Text>
+        <Text style={styles.text}>₹ {expenseList.balance} </Text>
       </Surface>
     </>
   );

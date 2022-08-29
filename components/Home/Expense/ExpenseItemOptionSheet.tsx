@@ -3,8 +3,17 @@ import { StyleSheet, Text } from "react-native";
 import { List, MD3Colors } from "react-native-paper";
 
 import RBSheet from "react-native-raw-bottom-sheet";
+import { SelectedExpense } from "../../shared/interface/Interface";
 
-const ExpenseItemOptionSheet = ({
+export type Props = {
+  open : boolean,
+  selectedExpense : SelectedExpense,
+  getSelectedAction : (opt : number)  => void
+  closeSheet : () => void
+};
+
+
+const ExpenseItemOptionSheet : React.FC<Props> = ({
   open,
   selectedExpense,
   getSelectedAction,
@@ -15,7 +24,7 @@ const ExpenseItemOptionSheet = ({
     else refRBSheet.current.close();
   }, [open]);
 
-  const actionSheetClose = (option) => {
+  const actionSheetClose = (option : number) => {
     getSelectedAction(option);
     closeSheet();
   };
@@ -44,7 +53,7 @@ const ExpenseItemOptionSheet = ({
       ref={refRBSheet}
       animationType="fade"
       closeOnDragDown={true}
-      onClose={() => closeSheet(false)}
+      onClose={closeSheet}
       customStyles={{
         wrapper: {
           backgroundColor: "rgba(0, 0, 0, 0.25)",

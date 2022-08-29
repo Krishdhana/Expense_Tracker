@@ -10,8 +10,16 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../../../store/redux/userdata-context";
 import { StyleSheet, Text, ToastAndroid, View } from "react-native";
+import { SelectedExpense } from "../../shared/interface/Interface";
 
-const AddNewExpenseModal = ({
+export type Props = {
+  open : boolean,
+  closeModal : () => void,
+  isEditMode : boolean,
+  selectedExpense : SelectedExpense
+}
+
+const AddNewExpenseModal : React.FC<Props> = ({
   open,
   closeModal,
   isEditMode,
@@ -19,7 +27,7 @@ const AddNewExpenseModal = ({
 }) => {
   const [expenseName, setExpenseName] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
-  const [expenseType, setExpenseType] = useState(false);
+  const [isIncome, setisIncome] = useState(false);
   const containerStyle = { backgroundColor: MD3Colors.primary95, padding: 20 };
   const userDataCtx = useContext(UserDataContext);
 
@@ -31,14 +39,15 @@ const AddNewExpenseModal = ({
       setExpenseName("");
       setExpenseAmount("");
     }
+    setisIncome(false);
   }, [open]);
 
   const addExpenseHandler = () => {
-    if (!isNaN(expenseAmount) && expenseName.length > 2 && expenseAmount > 0) {
+    if (!isNaN(+expenseAmount) && expenseName.length > 2 && +expenseAmount > 0) {
       let expenseItem = {
         name: expenseName,
         amount: +expenseAmount,
-        isIncome: expenseType,
+        isIncome: isIncome,
         date: new Date().toISOString(),
       };
 
@@ -68,38 +77,37 @@ const AddNewExpenseModal = ({
           onChangeText={setExpenseName}
           value={expenseName}
           mode="flat"
-          dense="true"
+          dense={true}
           label="Name"
-          theme={"3"}
           style={{ marginBottom: 15 }}
         />
         <TextInput
           onChangeText={setExpenseAmount}
           value={expenseAmount}
           mode="flat"
-          dense="true"
+          dense={true}
           label="Amount"
           keyboardType="number-pad"
           style={{ marginBottom: 15 }}
         />
-        <List.Item
+        {!isEditMode && <List.Item
           title="Add on Balance"
           right={(props) => (
             <Checkbox
-              status={expenseType ? "checked" : "unchecked"}
+              status={isIncome ? "checked" : "unchecked"}
               onPress={() => {
-                setExpenseType(!expenseType);
+                setisIncome(!isIncome);
               }}
             />
           )}
-        />
+        />}
 
         <View style={styles.btnContainer}>
           <Button
             style={{ marginHorizontal: 10 }}
             mode="text"
             compact={true}
-            onPress={() => closeModal(false)}
+            onPress={() => closeModal()}
           >
             Cancel
           </Button>

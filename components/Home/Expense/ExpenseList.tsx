@@ -2,9 +2,14 @@ import { useContext } from "react";
 import moment from "moment";
 import { UserDataContext } from "../../../store/redux/userdata-context";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { List, useTheme } from "react-native-paper";
+import { List, MD3Colors, useTheme } from "react-native-paper";
 
-const ExpenseList = ({ onClickExpenseItem }) => {
+export type Props = {
+  onClickExpenseItem : (a : number, b : number) => void
+}
+
+
+const ExpenseList : React.FC<Props> = ({ onClickExpenseItem }) => {
   const userDataCtx = useContext(UserDataContext);
 
   const theme = useTheme();
@@ -17,9 +22,9 @@ const ExpenseList = ({ onClickExpenseItem }) => {
       renderItem={(data) => {
         return (
           <View style={{ marginBottom: 6 }}>
-            <Text style={{ marginBottom: 8, marginLeft: 15, fontSize: 16 }}>
+            {/* <Text style={{ marginBottom: 8, marginLeft: 15, fontSize: 16 }}>
               {data.index == 0 ? "This month" : data.item.month}
-            </Text>
+            </Text> */}
             <FlatList
               showsVerticalScrollIndicator={false}
               data={data.item.expList}
@@ -32,8 +37,8 @@ const ExpenseList = ({ onClickExpenseItem }) => {
                         styles.listItem,
                         {
                           backgroundColor: exp.item.isIncome
-                            ? theme.colors.primary
-                            : theme.colors.secondary,
+                            ? MD3Colors.primary80
+                            : MD3Colors.secondary90,
                         },
                       ]}
                       title={exp.item.name}
@@ -42,15 +47,13 @@ const ExpenseList = ({ onClickExpenseItem }) => {
                         <List.Icon
                           style={{ opacity: 0.7 }}
                           icon={
-                            exp.item.isIncome ? "plus-thick" : "minus-thick"
+                            exp.item.isIncome ? "trending-up" : "trending-down"
                           }
                         />
                       )}
                       right={(props) => (
                         <Text
                           style={styles.amountText}
-                          fontWeight={"bold"}
-                          fontSize={16}
                         >
                           ₹ {exp.item.amount}
                         </Text>

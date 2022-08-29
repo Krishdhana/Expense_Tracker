@@ -10,12 +10,13 @@ import OverviewBanner from "../components/Home/OverviewBanner";
 import AddNewExpenseModal from "../components/Home/Expense/AddNewExpenseModal";
 import ExpenseItemOptionSheet from "../components/Home/Expense/ExpenseItemOptionSheet";
 import ViewExpense from "../components/Home/Expense/ViewExpense";
+import { SelectedExpense } from "../components/shared/interface/Interface";
 
 const Home = () => {
   const userDataCtx = useContext(UserDataContext);
 
   const [bottomSheetState, setBottomSheetState] = useState(false);
-  const [selectedExpense, setSelectedExpense] = useState({});
+  const [selectedExpense, setSelectedExpense] = useState({} as SelectedExpense);
   const [expenseEditMode, setExpenseEditMode] = useState(false);
 
   const [addNewExpenseModalState, setAddNewExpenseModalState] = useState(false);
@@ -24,7 +25,7 @@ const Home = () => {
   const resetToDefault = () => {
     setAddNewExpenseModalState(false);
     setExpenseEditMode(false);
-    setSelectedExpense({});
+    setSelectedExpense({} as SelectedExpense);
   };
 
   const openBottomSheet = () => {
@@ -40,7 +41,7 @@ const Home = () => {
     userDataCtx.removeExpense(selectedExpense);
   };
 
-  const getSelectedAction = (option) => {
+  const getSelectedAction = (option : number) => {
     switch (option) {
       case 1:
         setViewExpenseDialog(true);
@@ -58,7 +59,7 @@ const Home = () => {
     <Wrapper>
       <View style={{ flex: 1 }}>
         <WelcomeTitle name={userDataCtx.userInfo.name} />
-        <OverviewBanner expenseDetails={userDataCtx.expenseList[0]} />
+        <OverviewBanner expenseList={userDataCtx.expenseList[0]} />
         <View style={{ flex: 2 }}>
           <Expense
             setSelectedExpense={setSelectedExpense}
@@ -85,6 +86,7 @@ const Home = () => {
       </View>
       <AnimatedFAB
         icon={"plus"}
+        extended={false}
         label={"Label"}
         visible={true}
         onPress={() => setAddNewExpenseModalState(true)}

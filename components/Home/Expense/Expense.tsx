@@ -4,11 +4,18 @@ import { useContext } from "react";
 import ExpenseList from "./ExpenseList";
 import { UserDataContext } from "../../../store/redux/userdata-context";
 import NoExpenseMsg from "./NoExpenseMsg";
+import { SelectedExpense } from "../../shared/interface/Interface";
+import { Button } from "react-native-paper";
 
-const Expense = ({ onExpenseItemPress, setSelectedExpense }) => {
+export type Props = {
+  onExpenseItemPress : () => void,
+  setSelectedExpense : (exp : SelectedExpense) => void
+}
+
+const Expense : React.FC<Props> = ({ onExpenseItemPress, setSelectedExpense }) => {
   const userDataCtx = useContext(UserDataContext);
 
-  const onClickExpenseItem = (mainIdx, expIdx) => {
+  const onClickExpenseItem = (mainIdx : number , expIdx : number) => {
     let exp = {
       item: userDataCtx.expenseList[mainIdx].expList[expIdx],
       index: expIdx,
@@ -20,11 +27,14 @@ const Expense = ({ onExpenseItemPress, setSelectedExpense }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Text style={{ fontSize: 20, textAlign: "center", marginTop: 20 }}>
-        Recent Expenses
-      </Text>
+      <View style={styles.titleContainer}>
+        <Text style={{ fontSize: 18 }}>
+          All Expenses
+        </Text>
+        <Button onPress={() => {}} mode="text">View All</Button>
+      </View>
       {userDataCtx.expenseList.length <= 1 &&
-      userDataCtx.expenseList[0]?.expList.length ? (
+      userDataCtx.expenseList[0].expList.length ? (
         <ExpenseList onClickExpenseItem={onClickExpenseItem} />
       ) : (
         <NoExpenseMsg />
@@ -40,7 +50,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 4,
+    marginTop: 25,
     marginBottom: 2,
   },
 });

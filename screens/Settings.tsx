@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  BackHandler,
   StyleSheet,
   Text,
   ToastAndroid,
@@ -12,21 +11,29 @@ import { AntDesign } from "@expo/vector-icons";
 
 import Wrapper from "../components/shared/Wrapper";
 import { UserDataContext } from "../store/redux/userdata-context";
+import { useEffect } from "react";
+import ResetCacheDialog from "../components/Setting/ResetCacheDialog";
 
 const Settings = () => {
   const clearAppData = async () => {
     await AsyncStorage.removeItem("userData");
-    // BackHandler.exitApp();
+    setResetCacheDialogState(false);
   };
 
   const UserDataCtx = useContext(UserDataContext);
   const [isEditMode, setEditMode] = useState(false);
+  const [resetCacheDialogState, setResetCacheDialogState] = useState(false)
+
   const [name, setName] = useState(UserDataCtx.userInfo?.name);
   const [role, setRole] = useState(UserDataCtx.userInfo?.role);
   const [income, setIncome] = useState(UserDataCtx.userInfo?.income || 0);
   const [balance, setBalance] = useState(
-    UserDataCtx.expenseList[0]?.balance || 0
+    UserDataCtx.expenseList[0].balance || 0
   );
+
+  useEffect(() => {
+      setBalance(UserDataCtx.expenseList[0].balance)
+  }, [UserDataCtx.expenseList[0].balance])
 
   const updateUserData = () => {
     let obj = {
@@ -40,6 +47,19 @@ const Settings = () => {
 
     ToastAndroid.show("User details Updated !", 5000);
   };
+
+  const updateAmount = (amount : string, field : string) => {
+    if(!isNaN(+amount)) {
+      switch(field) {
+        case 'Income' :
+          setIncome(+amount)     
+           break; 
+        case 'Balance':
+          setBalance(+amount)
+            break;
+      }
+    }
+  }
 
   return (
     <Wrapper>
@@ -81,7 +101,7 @@ const Settings = () => {
             label="Income"
             value={income.toString()}
             keyboardType="numeric"
-            onChangeText={setIncome}
+            onChangeText={(amount) => updateAmount(amount, 'Income')}
             dense={true}
           />
           <TextInput
@@ -91,7 +111,7 @@ const Settings = () => {
             keyboardType="numeric"
             label="Balance"
             value={balance.toString()}
-            onChangeText={setBalance}
+            onChangeText={(amount) => updateAmount(amount, 'Balance')}
             dense={true}
           />
           <View style={styles.btnContainer}>
@@ -102,7 +122,7 @@ const Settings = () => {
             )}
             <Button
               style={{ marginTop: 20 }}
-              onPress={clearAppData}
+              onPress={() => setResetCacheDialogState(true)}
               icon={"close-circle-outline"}
               mode={"text"}
             >
@@ -115,15 +135,15 @@ const Settings = () => {
           <Text style={styles.creditText}>with</Text>
           {
             <AntDesign
-              style={{ marginBottom: 8 }}
               name="heart"
               size={20}
               color="red"
             />
           }
-          <Text style={styles.creditText}>KD</Text>
+          <Text style={[styles.creditText, {letterSpacing : 1}]}>KD</Text>
         </View>
       </View>
+      <ResetCacheDialog clearCache={clearAppData} close={() => setResetCacheDialogState(false)} open={resetCacheDialogState} />
     </Wrapper>
   );
 };

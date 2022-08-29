@@ -1,7 +1,11 @@
 import { StyleSheet, Text } from "react-native";
 import { MD3Colors } from "react-native-paper";
 
-const WelcomeTitle = (props) => {
+export type Props = {
+  name: string;
+};
+
+const WelcomeTitle: React.FC<Props> = (props) => {
   return (
     <Text style={styles.titleContainer}>
       Welcome,

@@ -1,8 +1,16 @@
 import moment from "moment";
 import { View, Text, StyleSheet } from "react-native";
 import { Dialog, Button, Portal } from "react-native-paper";
+import { SelectedExpense } from "../../shared/interface/Interface";
 
-const ViewExpense = ({ open, close, selectedExpense }) => {
+export type Props = {
+  open : boolean,
+  close : (state : boolean) => void
+  selectedExpense : SelectedExpense
+}
+
+
+const ViewExpense : React.FC<Props> = ({ open, close, selectedExpense }) => {
   return (
     <Portal>
       <Dialog visible={open} onDismiss={() => close(false)}>
