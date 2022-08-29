@@ -10,7 +10,6 @@ export const UserDataContext = createContext({
     income: "",
   },
   expenseList: [],
-  expenseDetails: { spent: 0, saving: 0 },
   updateUserInfo: (userObj) => {},
   addExpense: (exp) => {},
   removeExpense: (idx) => {},
@@ -18,31 +17,27 @@ export const UserDataContext = createContext({
 });
 
 const UserDataContextProvider = ({ children }) => {
-  const [expenseList, updateExpenseList] = useState([
+  const [expenseList, setExpenseList] = useState([
     {
       month: moment().format("MMMM"),
       expList: [],
-      balance: +userInfo?.income || 25000,
+      balance: +userInfo?.balance || +userInfo?.salary || 0,
     },
   ]);
-
-  const [expenseDetails, setExpenseDetails] = useState({
-    spent: 0,
-    saving: 0,
-  });
 
   const addExpense = (exp) => {
     if (expenseList[0].month != moment().format("MMMM")) {
       let newExp = {
         month: moment().format("MMMM"),
         expList: [exp],
-        balance: +userInfo.income || 25000,
+        balance: +userInfo.balance || 25000,
       };
-      updateExpenseList((curList) => [newExp, ...curList]);
+      calcualteAndUpdateExpList([newExp, ...expenseList]);
     } else {
       const curList = [...expenseList];
       curList[0].expList.unshift(exp);
-      updateExpenseList(curList);
+
+      calcualteAndUpdateExpList(curList);
     }
     ToastAndroid.show(`${exp.name} added`, 4000);
   };
@@ -51,7 +46,13 @@ const UserDataContextProvider = ({ children }) => {
     let expName = selectedExp.item.name;
     let current = [...expenseList];
     current[selectedExp.mainIdx].expList.splice(selectedExp.index, 1);
-    updateExpenseList(current);
+
+    let balance = current[selectedExp.mainIdx].balance || userInfo.balance;
+    selectedExp.isIncome
+      ? (balance -= +selectedExp.item.amount)
+      : (balance += +selectedExp.item.amount);
+    current[selectedExp.mainIdx].balance = balance;
+    calcualteAndUpdateExpList(current, selectedExp.mainIdx);
 
     ToastAndroid.show(`${expName} deleted`, 4000);
   };
@@ -63,8 +64,7 @@ const UserDataContextProvider = ({ children }) => {
       1,
       newExpense.item
     );
-
-    updateExpenseList(current);
+    calcualteAndUpdateExpList(current, newExpense.mainIdx);
 
     ToastAndroid.show(`Expense updated`, 4000);
   };
@@ -80,23 +80,25 @@ const UserDataContextProvider = ({ children }) => {
     setUserInfo(userObj);
     const currentExp = [...expenseList];
     currentExp[0].balance = userObj.balance;
-    updateExpenseList(currentExp);
+    setExpenseList(currentExp);
   };
 
-  const updateState = () => {
-    const obj = {
-      spent: 0,
-      saving: expenseList[0]?.balance || 0,
-    };
-
-    if (expenseList[0]?.expList.length > 0) {
-      let temp = { ...expenseList[0] };
-      temp.expList?.forEach((exp) => (obj.spent += exp.amount));
-      obj.saving = +temp.balance - +obj.spent;
+  const calcualteAndUpdateExpList = (expenseList, updateIndex = 0) => {
+    let temp = { ...expenseList[updateIndex], income: 0, spent: 0 };
+    if (temp.expList?.length > 0) {
+      temp.expList?.forEach((exp) => {
+        if (exp.isIncome) {
+          temp.income += exp.amount;
+          temp.balance += exp.amount;
+        } else {
+          temp.spent += exp.amount;
+          temp.balance -= exp.amount;
+        }
+      });
     }
-    setExpenseDetails(obj);
-    console.log(expenseList);
-    _setUserDataToStorage();
+    let updatedList = [...expenseList];
+    updatedList.splice(updateIndex, 1, temp);
+    setExpenseList(updatedList);
   };
 
   const _getUserDataFromStorage = async () => {
@@ -104,7 +106,7 @@ const UserDataContextProvider = ({ children }) => {
     let jsoned = JSON.parse(rawData);
     if (jsoned) {
       updateUserInfo(jsoned.userInfo);
-      updateExpenseList(jsoned.expenseList);
+      setExpenseList(jsoned.expenseList);
     }
   };
 
@@ -113,8 +115,9 @@ const UserDataContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    updateState();
-  }, [expenseList]);
+    console.log(expenseList[0]);
+    _setUserDataToStorage();
+  }, [expenseList, userInfo]);
 
   const _setUserDataToStorage = async () => {
     try {
@@ -125,7 +128,6 @@ const UserDataContextProvider = ({ children }) => {
   const value = {
     userInfo: userInfo,
     expenseList: expenseList,
-    expenseDetails: expenseDetails,
     updateUserInfo: updateUserInfo,
     addExpense: addExpense,
     updateExpense: updateExpense,

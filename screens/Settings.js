@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Button, IconButton, TextInput } from "react-native-paper";
 import { useContext, useState } from "react";
+import { AntDesign } from "@expo/vector-icons";
 
 import Wrapper from "../components/shared/Wrapper";
 import { UserDataContext } from "../store/redux/userdata-context";
@@ -15,7 +16,7 @@ import { UserDataContext } from "../store/redux/userdata-context";
 const Settings = () => {
   const clearAppData = async () => {
     await AsyncStorage.removeItem("userData");
-    BackHandler.exitApp();
+    // BackHandler.exitApp();
   };
 
   const UserDataCtx = useContext(UserDataContext);
@@ -109,6 +110,19 @@ const Settings = () => {
             </Button>
           </View>
         </View>
+        <View style={styles.creditContainer}>
+          <Text style={styles.creditText}>Crafted</Text>
+          <Text style={styles.creditText}>with</Text>
+          {
+            <AntDesign
+              style={{ marginBottom: 8 }}
+              name="heart"
+              size={20}
+              color="red"
+            />
+          }
+          <Text style={styles.creditText}>KD</Text>
+        </View>
       </View>
     </Wrapper>
   );
@@ -140,5 +154,17 @@ const styles = StyleSheet.create({
     width: "40%",
     marginHorizontal: "30%",
     marginTop: 20,
+  },
+  creditContainer: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: 14,
+    marginTop: 40,
+    fontWeight: "bold",
+  },
+  creditText: {
+    fontSize: 14,
+    marginBottom: 8,
+    fontWeight: "bold",
   },
 });

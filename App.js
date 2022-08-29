@@ -23,6 +23,8 @@ export default function App() {
     version: 3,
     colors: {
       ...DefaultTheme.colors,
+      // primary: "#51624F",
+      // secondary: "#E6D5AA",
     },
   };
 
@@ -36,7 +38,7 @@ export default function App() {
     },
     {
       key: "expenseList",
-      title: "ExpenseList",
+      title: "History",
       focusedIcon: "clipboard-list",
       unfocusedIcon: "clipboard-list-outline",
     },

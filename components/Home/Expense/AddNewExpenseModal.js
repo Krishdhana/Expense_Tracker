@@ -38,7 +38,7 @@ const AddNewExpenseModal = ({
       let expenseItem = {
         name: expenseName,
         amount: +expenseAmount,
-        income: expenseType,
+        isIncome: expenseType,
         date: new Date().toISOString(),
       };
 

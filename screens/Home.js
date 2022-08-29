@@ -58,7 +58,7 @@ const Home = () => {
     <Wrapper>
       <View style={{ flex: 1 }}>
         <WelcomeTitle name={userDataCtx.userInfo.name} />
-        <OverviewBanner expenseDetails={userDataCtx.expenseDetails} />
+        <OverviewBanner expenseDetails={userDataCtx.expenseList[0]} />
         <View style={{ flex: 2 }}>
           <Expense
             setSelectedExpense={setSelectedExpense}

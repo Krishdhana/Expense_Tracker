@@ -2,10 +2,12 @@ import { useContext } from "react";
 import moment from "moment";
 import { UserDataContext } from "../../../store/redux/userdata-context";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { List, MD3Colors } from "react-native-paper";
+import { List, useTheme } from "react-native-paper";
 
 const ExpenseList = ({ onClickExpenseItem }) => {
   const userDataCtx = useContext(UserDataContext);
+
+  const theme = useTheme();
 
   return (
     <FlatList
@@ -29,9 +31,9 @@ const ExpenseList = ({ onClickExpenseItem }) => {
                       style={[
                         styles.listItem,
                         {
-                          backgroundColor: exp.item.income
-                            ? MD3Colors.primary80
-                            : MD3Colors.secondary90,
+                          backgroundColor: exp.item.isIncome
+                            ? theme.colors.primary
+                            : theme.colors.secondary,
                         },
                       ]}
                       title={exp.item.name}
@@ -39,7 +41,9 @@ const ExpenseList = ({ onClickExpenseItem }) => {
                       left={(props) => (
                         <List.Icon
                           style={{ opacity: 0.7 }}
-                          icon={exp.item.income ? "plus-thick" : "minus-thick"}
+                          icon={
+                            exp.item.isIncome ? "plus-thick" : "minus-thick"
+                          }
                         />
                       )}
                       right={(props) => (
