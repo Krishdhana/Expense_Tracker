@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: "bold",
     fontSize: 24,
-    marginTop: 5,
+    marginTop: 3,
     textAlign: "center",
   },
   smallTxt: {
     marginLeft: 5,
-    fontSize: 12,
+    fontSize: 14,
   },
   box: {
     width: "45%",

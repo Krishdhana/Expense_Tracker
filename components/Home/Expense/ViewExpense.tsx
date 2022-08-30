@@ -25,10 +25,10 @@ const ViewExpense : React.FC<Props> = ({ open, close, selectedExpense }) => {
             <Text>₹ {selectedExpense.item?.amount}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.title}>Date :</Text>
+            <Text style={styles.title}>{selectedExpense.item?.isIncome ? 'Received' : 'Purchased'} on :</Text>
             <Text>
               {" "}
-              {moment(selectedExpense.item?.date).format("DD MMM YYYY")}
+              {moment(selectedExpense.item?.date).calendar()}
             </Text>
           </View>
         </Dialog.Content>
@@ -44,7 +44,7 @@ export default ViewExpense;
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: "18%",
+    marginHorizontal: "12%",
   },
   row: {
     display: "flex",

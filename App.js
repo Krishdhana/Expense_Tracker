@@ -8,11 +8,11 @@ import {
 
 import Home from "./screens/Home";
 import Settings from "./screens/Settings";
-import ExpenseScreen from "./screens/ExpenseScreen";
+import History from "./screens/History";
 import UserDataContextProvider from "./store/redux/userdata-context";
 
 const HomeRoute = () => <Home />;
-const ExpenseListRoute = () => <ExpenseScreen />;
+const HistoryRoute = () => <History />;
 const SettingRoute = () => <Settings />;
 
 export default function App() {
@@ -23,8 +23,7 @@ export default function App() {
     version: 3,
     colors: {
       ...DefaultTheme.colors,
-      // primary: "#51624F",
-      // secondary: "#E6D5AA",
+      background: MD3Colors.primary95,
     },
   };
 
@@ -37,7 +36,7 @@ export default function App() {
       unfocusedIcon: "home-variant-outline",
     },
     {
-      key: "expenseList",
+      key: "history",
       title: "History",
       focusedIcon: "clipboard-list",
       unfocusedIcon: "clipboard-list-outline",
@@ -52,7 +51,7 @@ export default function App() {
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
-    expenseList: ExpenseListRoute,
+    history: HistoryRoute,
     settings: SettingRoute,
   });
 

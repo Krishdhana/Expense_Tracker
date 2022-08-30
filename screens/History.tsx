@@ -1,20 +1,21 @@
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
-import ExpenseList from "../components/Home/Expense/ExpenseList";
+import ExpenseListHistory from "../components/History/ExpenseList";
+
 import Wrapper from "../components/shared/Wrapper";
 
-const ExpenseScreen = () => {
+const History = () => {
   return (
     <Wrapper>
       <View>
         <Text style={styles.title}>Expenses</Text>
-        <ExpenseList onClickExpenseItem={(exp : any) => {}} />
+        <ExpenseListHistory />
       </View>
     </Wrapper>
   );
 };
 
-export default ExpenseScreen;
+export default History;
 
 const styles = StyleSheet.create({
   title: {

@@ -1,21 +1,31 @@
-import { Text, View, StyleSheet } from "react-native";
-import { useContext } from "react";
+import { Text, View, StyleSheet, FlatList } from "react-native";
+import { useContext, useEffect, useState } from "react";
 
-import ExpenseList from "./ExpenseList";
+
 import { UserDataContext } from "../../../store/redux/userdata-context";
 import NoExpenseMsg from "./NoExpenseMsg";
 import { SelectedExpense } from "../../shared/interface/Interface";
 import { Button } from "react-native-paper";
+import ExpenseItemRenderer from "../../shared/ExpenseItemRenderer";
+import * as Types from '../../shared/interface/Interface'
 
 export type Props = {
   onExpenseItemPress : () => void,
   setSelectedExpense : (exp : SelectedExpense) => void
 }
 
+
 const Expense : React.FC<Props> = ({ onExpenseItemPress, setSelectedExpense }) => {
   const userDataCtx = useContext(UserDataContext);
+  const [recentExpenses, setRecentExpenses] = useState<Types.ExpenseItem[]>([])
 
-  const onClickExpenseItem = (mainIdx : number , expIdx : number) => {
+  useEffect(()=>{
+    setRecentExpenses(userDataCtx.expenseList[0].expList.slice(0,9));
+  },[userDataCtx.expenseList])
+
+  
+
+  const onClickExpenseItem = (expIdx : number, mainIdx = 0) => {
     let exp = {
       item: userDataCtx.expenseList[mainIdx].expList[expIdx],
       index: expIdx,
@@ -31,14 +41,19 @@ const Expense : React.FC<Props> = ({ onExpenseItemPress, setSelectedExpense }) =
         <Text style={{ fontSize: 18 }}>
           All Expenses
         </Text>
-        <Button onPress={() => {}} mode="text">View All</Button>
+        <Button onPress={() => {}} mode="text">History</Button>
       </View>
       {userDataCtx.expenseList.length <= 1 &&
-      userDataCtx.expenseList[0].expList.length ? (
-        <ExpenseList onClickExpenseItem={onClickExpenseItem} />
-      ) : (
-        <NoExpenseMsg />
-      )}
+      userDataCtx.expenseList[0].expList.length
+      ?
+      (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={recentExpenses}
+          renderItem={(exp) => <ExpenseItemRenderer expenseItem={exp} onClickExpenseItem={onClickExpenseItem} />}
+          />
+      ) : (<NoExpenseMsg />)
+     }
     </View>
   );
 };

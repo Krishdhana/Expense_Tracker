@@ -18,6 +18,7 @@ const Settings = () => {
   const clearAppData = async () => {
     await AsyncStorage.removeItem("userData");
     setResetCacheDialogState(false);
+    ToastAndroid.show('Cache cleared, please restart app to see changes', 4000)
   };
 
   const UserDataCtx = useContext(UserDataContext);
@@ -26,40 +27,32 @@ const Settings = () => {
 
   const [name, setName] = useState(UserDataCtx.userInfo?.name);
   const [role, setRole] = useState(UserDataCtx.userInfo?.role);
-  const [income, setIncome] = useState(UserDataCtx.userInfo?.income || 0);
+  const [income, setIncome] = useState(UserDataCtx.userInfo?.income || '0');
   const [balance, setBalance] = useState(
-    UserDataCtx.expenseList[0].balance || 0
+    UserDataCtx.expenseList[0].balance || '0'
   );
 
   useEffect(() => {
       setBalance(UserDataCtx.expenseList[0].balance)
   }, [UserDataCtx.expenseList[0].balance])
 
+
   const updateUserData = () => {
-    let obj = {
-      name: name,
-      role: role,
-      income: +income,
-      balance: +balance,
-    };
-    UserDataCtx.updateUserInfo(obj);
-    setEditMode(false);
-
-    ToastAndroid.show("User details Updated !", 5000);
-  };
-
-  const updateAmount = (amount : string, field : string) => {
-    if(!isNaN(+amount)) {
-      switch(field) {
-        case 'Income' :
-          setIncome(+amount)     
-           break; 
-        case 'Balance':
-          setBalance(+amount)
-            break;
-      }
+    if(isNaN(+balance) || isNaN(+income) ) {
+      ToastAndroid.show('Balance and Income should be Numbers', 4000)
+    } else {
+      let obj = {
+        name: name,
+        role: role,
+        income: +income,
+        balance: +balance,
+      };
+      UserDataCtx.updateUserInfo(obj);
+      setEditMode(false);
+  
+      ToastAndroid.show("User details Updated !", 5000);
     }
-  }
+  };
 
   return (
     <Wrapper>
@@ -101,7 +94,7 @@ const Settings = () => {
             label="Income"
             value={income.toString()}
             keyboardType="numeric"
-            onChangeText={(amount) => updateAmount(amount, 'Income')}
+            onChangeText={setIncome}
             dense={true}
           />
           <TextInput
@@ -111,7 +104,7 @@ const Settings = () => {
             keyboardType="numeric"
             label="Balance"
             value={balance.toString()}
-            onChangeText={(amount) => updateAmount(amount, 'Balance')}
+            onChangeText={setBalance}
             dense={true}
           />
           <View style={styles.btnContainer}>

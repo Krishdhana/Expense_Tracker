@@ -28,7 +28,7 @@ const AddNewExpenseModal : React.FC<Props> = ({
   const [expenseName, setExpenseName] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
   const [isIncome, setisIncome] = useState(false);
-  const containerStyle = { backgroundColor: MD3Colors.primary95, padding: 20 };
+  const containerStyle = { backgroundColor: MD3Colors.primary95, padding: 20, borderRadius : 20 };
   const userDataCtx = useContext(UserDataContext);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const AddNewExpenseModal : React.FC<Props> = ({
       }
       closeModal();
     } else {
-      ToastAndroid.show("Please enter proper Expense details", 4000);
+      ToastAndroid.show("Amount should be numbers", 4000);
     }
   };
 
@@ -91,7 +91,7 @@ const AddNewExpenseModal : React.FC<Props> = ({
           style={{ marginBottom: 15 }}
         />
         {!isEditMode && <List.Item
-          title="Add on Balance"
+          title="Mark as Income"
           right={(props) => (
             <Checkbox
               status={isIncome ? "checked" : "unchecked"}
